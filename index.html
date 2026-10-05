@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NIRASKU - DINARPUS Kab. Kudus</title>
+  
+  <meta name="description" content="Navigasi Informasi Arsip Statis DINARPUS Kabupaten Kudus">
+  <meta name="theme-color" content="#0b0f19">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #appFrameContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 10;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Loader Overlay Glassmorphism */
+    #loaderOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, #151b26 0%, #0b0f19 100%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .loader-box {
+      background: rgba(21, 27, 38, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 32px 40px;
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(0, 255, 170, 0.15);
+      border-top-color: #00ffaa;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
+    }
+
+    .app-title {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .app-subtitle {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .fallback-btn {
+      margin-top: 20px;
+      display: none;
+      background: #00ffaa;
+      color: #000000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .fallback-btn:hover {
+      background: #00e699;
+      transform: scale(1.02);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading State -->
+  <div id="loaderOverlay">
+    <div class="loader-box">
+      <div class="spinner"></div>
+      <div class="app-title">NIRASKU</div>
+      <div class="app-subtitle">Menghubungkan ke Portal E-Arsip DINARPUS...</div>
+      <button id="btnReload" class="fallback-btn" onclick="reloadFrame()">Muat Ulang Halaman</button>
+    </div>
+  </div>
+
+  <!-- Iframe Wrapper Container -->
+  <div id="appFrameContainer">
+    <iframe 
+      id="mainFrame" 
+      src="https://script.google.com/macros/s/AKfycbxnCZLCg2zdEjjWfRgLAr-GUi8YQ0Z57_T0IF8O2BygxUR5QsFB6eP6tK7-JYDCfIC5/exec" 
+      allow="accelerometer; autoplay; camera; encrypted-media; geolocation; gyroscope; microphone; fullscreen"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+    ></iframe>
+  </div>
+
+  <script>
+    var frame = document.getElementById('mainFrame');
+    var loader = document.getElementById('loaderOverlay');
+    var btnReload = document.getElementById('btnReload');
+
+    function hideLoader() {
+      if (loader) {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+      }
+    }
+
+    function reloadFrame() {
+      if (frame) {
+        if (loader) {
+          loader.style.opacity = '1';
+          loader.style.visibility = 'visible';
+        }
+        frame.src = frame.src;
+      }
+    }
+
+    if (frame) {
+      frame.addEventListener('load', function() {
+        hideLoader();
+      });
+    }
+
+    // Fallback otomatis jika event load iframe tertahan
+    setTimeout(function() {
+      hideLoader();
+    }, 7000);
+
+    // Tampilkan tombol muat ulang jika loading melebihi batas waktu wajar
+    setTimeout(function() {
+      if (btnReload && loader && loader.style.visibility !== 'hidden') {
+        btnReload.style.display = 'inline-block';
+      }
+    }, 12000);
+  </script>
+</body>
+</html>
